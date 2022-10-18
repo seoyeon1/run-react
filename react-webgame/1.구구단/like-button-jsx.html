@@ -1,0 +1,50 @@
+<html>
+<head>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<!-- babel 라이브러리 추가 -->
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> 
+<!--<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>-->
+<!--<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>-->
+<script type="text/babel">
+    // jsx 주의 사항
+    // 컴포넌트는 대문자, 태그는 소문자로 시작, 태그를 닫을 때 / 필요, js부분은 {}로 감싸고 문자열은 ''로 감싸기
+    // jsx 문법 : for, if 사용 X > 삼항 연산자, 배열(map) 사용. 이때도 {} 싸는 거 주의
+    // return 은 1개의 태그만 가능. 여러 형제 태그 사용 > 부모태그로 감싸기
+    // 컴포넌트 = 하나의 태그 > 여러 번 사용 가능
+  'use strict';
+
+  class LikeButton extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {liked: false};
+    }
+
+    render() {
+      if (this.state.liked) {
+        return 'You liked this.';
+      }
+      // return React.createElement('button', {onClick: ()=> this.setState({liked:true}, 'Like')}); 아래 코드와 같은 의미(원시적인 코드)
+      return ( // jsx(js + xml) : js로만 하려다보니 가독성 아쉬움 > react에서는 jsx를 지원, js지만 html느낌을 주어 가독성을 더 높혀줌
+        <button onClick={() => this.setState({liked: true})}>
+          Like
+        </button>
+      );
+    }
+  }
+</script>
+<script type="text/babel"> // js에서는 태그 문법을 사용하지 않기에 읽지 못함 > babel 라이브러리가 파일에서 jsx부분을 (React.createElement로)변환해서 가능하게 해줌
+//   ReactDOM.render(<LikeButton/>, document.querySelector('#root')); // react 17버전 코드
+  ReactDOM.createRoot(document.querySelector('#root')).render(
+    <div>  
+    <LikeButton />
+    <LikeButton />
+    <LikeButton />
+    </div>
+    ); // react 18 버전. 다른 사람 코드를 볼 때 17버전(render)인지 18버전(createRoot)인지 확인
+</script>
+</body>
+</html>
