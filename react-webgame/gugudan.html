@@ -1,0 +1,75 @@
+<html>
+<head>
+    <!-- 한글 설정 -->
+    <meta charset="UTF-8"/>
+    <title>구구단</title>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script type="text/babel">
+  'use strict';
+  class GuGuDan extends React.Component {// 구구단 클래스 컴포넌트 생성
+    // 바꾸는 부분은 state!
+    constructor(props) {
+        super(props);
+        // 필요한 state : 피연산자 2개, 입력값, 결과값
+        this.state = { 
+            first : Math.ceil(Math.random() * 9), // 피연산자 : 1-9 사이 랜덤값 하나
+            second : Math.ceil(Math.random() * 9),
+            value : '', 
+            result : '',
+        };
+        
+    }
+    // jsx와 js를 분리해서 js로직들을 클래스의 메소드로 따로 빼서 작성하는 게 좋음 
+    // onSubmit : form을 제출했을 때("입력"을 눌렀을 때 실행)
+    onSubmit = (e)=> {
+        e.preventDefault();
+        if (parseInt(this.state.value) === this.state.first * this.state.second) {
+            this.setState({ // 정답일 때 화면 변화
+                result : '정답',
+                first : Math.ceil(Math.random() * 9),
+                second : Math.ceil(Math.random() * 9),
+                value : '',
+            });
+        }
+        else { // 오답일 때 화면 변화
+            this.setState({
+                result : '땡!',
+                value : '',
+            });
+        }
+    };
+    // input에 값을 입력(이벤트발생)할 때도 state가 변하니까 값을 입력하려면 작성해줘야 함
+    onChange =(e) => {
+        this.setState({value : e.target.value});
+    };
+
+    render(){
+        // 태그 사이에는 {자바스크립트} 가능. xml에서 싱글태그는 꼭 /로 닫아줘야함
+        // 입력창에 입력하는 것도 state가 변한 것
+        
+        return (
+            <div>
+                <div>{this.state.first}곱하기{this.state.second}는?</div>
+                <form onSubmit = {this.onSubmit}>
+                    
+                    <input type="number" value={this.state.value} onChange = {this.onChange}/>
+                    <button type="submit" >입력</button>
+                    </form>
+                    <div>{this.state.result}</div>
+            </div>
+            );
+    }
+    
+  }
+</script>
+<script type="text/babel">
+    ReactDOM.render(<GuGuDan />, document.querySelector('#root'));
+</script>
+</body>
+</html>
