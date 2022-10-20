@@ -12,36 +12,61 @@
 
 <script type="text/babel">
   'use strict';
+  // 구구단 게임 - react 클래스 컴포넌트 버전
   class GuGuDan extends React.Component {// 구구단 클래스 컴포넌트 생성
-    // 바꾸는 부분은 state!
-    constructor(props) {
-        super(props);
-        // 필요한 state : 피연산자 2개, 입력값, 결과값
-        this.state = { 
+    // 바꾸는 부분은 state! 선언하자
+    // react 좋은 점 : 상태(데이터)를 변화시키면 화면에도 알아서 반영
+
+    // constructor(props) {
+    //     super(props);
+    //     // 필요한 state : 피연산자 2개, 입력값, 결과값
+    //     this.state = { 
+    //         first : Math.ceil(Math.random() * 9), // 피연산자 : 1-9 사이 랜덤값 하나
+    //         second : Math.ceil(Math.random() * 9),
+    //         value : '', 
+    //         result : '',
+    //     };
+        
+    // }
+    // (실무) 위에 처럼 constructor, this 안쓰고 state로 바로 선언해도 됨
+    state = { 
             first : Math.ceil(Math.random() * 9), // 피연산자 : 1-9 사이 랜덤값 하나
             second : Math.ceil(Math.random() * 9),
             value : '', 
             result : '',
+            resultValue : '',
         };
-        
-    }
+    
     // jsx와 js를 분리해서 js로직들을 클래스의 메소드로 따로 빼서 작성하는 게 좋음 
-    // onSubmit : form을 제출했을 때("입력"을 눌렀을 때 실행)
+    // onSubmit : <form>을 제출했을 때("입력"을 눌렀을 때 실행)
+
+    // 사용자 정의 메소드는 무조건 화살표 함수!
+
     onSubmit = (e)=> {
         e.preventDefault();
         if (parseInt(this.state.value) === this.state.first * this.state.second) {
-            this.setState({ // 정답일 때 화면 변화
-                result : '정답',
+            this.setState((prevState) => { // 정답일 때 화면 변화. 함수형 setState() : 비동기, 이전 상태값을 다음 상태값에 활용할 수 있음
+                return {
+                result : '정답!' + prevState.value,
                 first : Math.ceil(Math.random() * 9),
                 second : Math.ceil(Math.random() * 9),
                 value : '',
+            }
             });
+            // 이전 state의 값로 새 state 값을 만들 때(setState 안에 this.state가 들어갈 때)는 return해주는 함수를 사용하기
+            // this.setState((prevState)=>{
+            //     return {
+            //         value : prevState.value +1
+            //     };
+            // });
+            this.input.focus(); // 입력할 때도 입력창 focus가 유지됨
         }
         else { // 오답일 때 화면 변화
             this.setState({
                 result : '땡!',
                 value : '',
             });
+            this.input.focus(); // document.querySelector('input').focus() 같은 의미
         }
     };
     // input에 값을 입력(이벤트발생)할 때도 state가 변하니까 값을 입력하려면 작성해줘야 함
@@ -49,27 +74,32 @@
         this.setState({value : e.target.value});
     };
 
+    input; // DOM에 직접 접근하고 싶을 때? react hooks - <input> ref : ref 객체의 current 값은 우리가 선택하고자 하는 DOM
+
     render(){
         // 태그 사이에는 {자바스크립트} 가능. xml에서 싱글태그는 꼭 /로 닫아줘야함
-        // 입력창에 입력하는 것도 state가 변한 것
+        // 입력창에 입력하는 것도 state가 변한 것 > state가 변할 때(this.setState())마다 render()도 새로 실행됨(렌더링) : 성능 최적화 측면에서 주의
+        // > 그렇기 때문에 함수들을 render 밖으로 따로 빼주길 권장
         
         return (
-            <div>
+            // () : 그룹 연산자. 없어도 실행은 되지만 우선순위 고려해야할 때 사용 
+            // <div> 대신 <React.Fragment> 사용해도 됨. babel 툴을 설치하면 <>로 대체 가능
+            <React.Fragment>
                 <div>{this.state.first}곱하기{this.state.second}는?</div>
                 <form onSubmit = {this.onSubmit}>
                     
-                    <input type="number" value={this.state.value} onChange = {this.onChange}/>
+                    <input ref={(c) => {this.input = c;}} type="number" value={this.state.value} onChange = {this.onChange}/>
                     <button type="submit" >입력</button>
                     </form>
                     <div>{this.state.result}</div>
-            </div>
+            </React.Fragment>
             );
     }
     
   }
 </script>
 <script type="text/babel">
-    ReactDOM.render(<GuGuDan />, document.querySelector('#root'));
+    ReactDOM.render(<GuGuDan />, document.querySelector('#root')); // 이 때 위에 render()가 처음 실행됨
 </script>
 </body>
 </html>
