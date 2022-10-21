@@ -5,15 +5,17 @@
 </head>
 <body>
 <div id="root"></div>
-<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
 <script type="text/babel">
   'use strict';
   // 구구단 게임 - react 함수 컴포넌트 버전 + react hooks(권장)
-  // react hooks : 함수 컴포넌트에서도 state, ref 기능을 사용할 수 있게 해줌. 클래스버전 보다 코드가 짧음
+  // react hooks : 함수 컴포넌트에서도 state, ref 기능을 사용할 수 있게 해줌. 클래스버전 보다 코드가 간결
   // state가 바뀌면 함수 전체가 다시 실행됨 (class 방식과 차이)
+  // > form제출처럼 아래같이 setState가 여러 개인 경우 > react는 비동기이기 때문에! setState를 한번에 모아 render를 n번이 아닌 한번에 처리
+  // react에서는 html 태그의 속성 중 class, for (X) > className, htmlFor (O)
   const GuGuDan = () => { 
     
     // hooks에서 state 선언 : 각각 [state, setState] 분리해서 선언&초기화. 컴포넌트 안에서 선언해줘야 함
@@ -29,20 +31,22 @@
         setValue(e.target.value);
     };
 
+    // console.log('렌더링');
+
     const onSubmitForm = (e) => {
       e.preventDefault();
       // state 변경 : 기존 class 방식의 setState를 각각의 setState에 맞춰 바꿔주면 됨
       if (parseInt(value) === first * second) {
-        setResult('정답');
+        setResult('정답'); // 여기서도 setStete할 때 함수로 이전 state값을 활용 가능
         setFirst(Math.ceil(Math.random() * 9));
         setSecond(Math.ceil(Math.random() * 9));
         setValue('');
-        inputEl.current.focus();
+        inputRef.current.focus();
       }
       else {
         setResult('땡');
         setValue('');
-        inputEl.current.focus();
+        inputRef.current.focus();
       }
     };
 
