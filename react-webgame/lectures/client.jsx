@@ -2,7 +2,7 @@
 const React = require('react');
 const ReactDom = require('react-dom');
 // 컴포넌트마다 .jsx 파일로 쪼개서 작성 > html에서 이들을 하나의 파일로 인식할 수 있도록 파일들을 합치기 필요 > webpack 사용
-const WordRelay = require('./wordRelay')
+const WordRelay = require('./wordRelay');
 
 
 
