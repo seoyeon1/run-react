@@ -21,7 +21,7 @@ class WordRelay extends Component {
             word: this.state.value, 
             value: '',
           });
-          this.input.focus();
+          this.input.focus(); // focus() : DOM에 직접 접근 가능
         } 
         else { // 틀렸을 때
           this.setState({

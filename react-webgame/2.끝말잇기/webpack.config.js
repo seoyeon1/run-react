@@ -1,6 +1,6 @@
 // webpack 설정 파일
 const path = require('path');
-const { env } = require('process');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 module.exports = {
     mode : 'development', // 개발용. 실서비스일 때 > production
@@ -18,14 +18,29 @@ module.exports = {
             test : /\.jsx?/, // 1. 규칙을 적용시킬 파일들
             loader : 'babel-loader', // 2. .js/.jsx에 바벨을 적용 > 최신 문법을 옛날 브라우저에도 호환 가능하게 
             options : { // 3. 바벨에 옵션 적용 : 최소한으로 필요한 preset들만 사용. 에러발생 > 에러메시지 참고해서 추가로 플러그인 설치(why? package에 깔린 dependencies들이 너무 많으면 나중에 웹팩 빌드할 때 오래걸려서)
-                presets : ["@babel/preset-env","@babel/preset-react"],
-                // Plugins : [],
+                presets : [
+                    ['@babel/preset-env', {
+                    targets: {browsers: ['last 2 chrome versions']},
+                    debug: true,
+                  }],
+                  "@babel/preset-react"
+                ],
+                plugins: ['react-refresh/babel'],
             },
+            exclude: path.join(__dirname, 'node_modules'),
         }],
     },
+    plugins: [
+        new ReactRefreshWebpackPlugin(),
+    ],
     output : { // 출력
         path : path.join(__dirname, 'dist'),
-        filename : 'app.js',
+        filename: '[name].js',
+        publicPath: '/dist',
     },
-
+    devServer: {
+        devMiddleware: { publicPath: '/dist' }, // 웹팩이 빌드한 파일들이 위치하는 곳
+        static: { directory: path.resolve(__dirname) }, // 실제로 존재하는 파일들(index.html)의 경로
+        hot: true // 핫 리로딩 : (리로딩과 차이점) 새고해도 기존 데이터를 유지하면서 변경사항을 자동으로 바로 적용해줌
+    }
 };
